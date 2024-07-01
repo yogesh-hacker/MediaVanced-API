@@ -15,9 +15,6 @@ user_agents = [
 initial_headers = {
     'Referer': default_domain,
     'User-Agent': random.choice(user_agents),
-    'Accept': '*/*',
-    'Connection': 'keep-alive',
-    'Content-Type': 'application/x-www-form-urlencoded"'
 }
 
 base_url = "https://minoplres.xyz/d/l1s6pevitg6y_{}"
@@ -59,6 +56,7 @@ def real_extract(url):
         if stream_match:
             stream_url_base = stream_match.group(1)
             stream_url_template = re.sub(r'(_[a-z])', '_{}', stream_url_base)
+            print(stream_url_template)
             for suffix in suffixes:
                 quality = qualities.get(suffix, 'unknown')
                 stream_url = stream_url_template.format(suffix)

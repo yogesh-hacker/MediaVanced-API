@@ -67,22 +67,24 @@ def real_extract(url):
                 mMode = mSoup.find("input", attrs={"name": "mode"})
                 mHash = mSoup.find("input", attrs={"name": "hash"})
                 
-                payload = {
-                    "op": mOp['value'],
-                    "id": mId['value'],
-                    "mode": mMode['value'],
-                    "hash": mHash['value']
-                }
-                
-                mResponse2 = requests.post(download_url, data=payload, headers=headers)
-                mPageHtml2 = mResponse2.text
-                mPattern = r'href="([^"]+\.mp4[^"]*)"'
-                mMatch = re.search(mPattern, mPageHtml2)
-                if mMatch:
-                    quality = qualities.get(suffix, 'unknown')
-                    response_data['downloading_urls'][quality] = mMatch.group(1)
-            #else:
-                #response_data['error'] = f'Request to {download_url} failed because: QUALITY UNAVAILABLE'
+                if mOp and mId and mMode and mHash:
+                    payload = {
+                        "op": mOp['value'],
+                        "id": mId['value'],
+                        "mode": mMode['value'],
+                        "hash": mHash['value']
+                    }
+                    
+                    mResponse2 = requests.post(download_url, data=payload, headers=headers)
+                    mPageHtml2 = mResponse2.text
+                    mPattern = r'href="([^"]+\.mp4[^"]*)"'
+                    mMatch = re.search(mPattern, mPageHtml2)
+                    if mMatch:
+                        quality = qualities.get(suffix, 'unknown')
+                        response_data['downloading_urls'][quality] = mMatch.group(1)
+                else:
+                    response_data['error'] = 'Failed to extract necessary form inputs for download URL!'
+                    break
 
         if not response_data['streaming_urls'] and not response_data['downloading_urls']:
             response_data['status'] = 'failed'

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page - MediaVanced</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <header class="text-center mb-4">
+            <h1>Welcome to MediaVanced</h1>
+        </header>
+        <main>
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Explore Content</h5>
+                            <p class="card-text">Enter the URL and click the button to fetch data from the API.</p>
+                            <form id="apiRequestForm">
+                                <div class="form-group">
+                                    <label for="urlInput">URL:</label>
+                                    <input type="text" class="form-control" id="urlInput" placeholder="Enter URL" value="https://minoplres.xyz/embed-hrn6w5iq8498.html">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Fetch Data</button>
+                            </form>
+                            <div id="responseContainer" class="mt-4" style="display: none;">
+                                <h5 class="card-title">API Response</h5>
+                                <pre id="responseContent" class="bg-light p-3 rounded"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="mt-5 text-center">
+            <p>&copy; 2024 MediaVanced. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // JavaScript code to handle form submission and API request
+        $(document).ready(function() {
+            $('#apiRequestForm').submit(function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                // Get input value
+                var url = $('#urlInput').val().trim();
+
+                // Make AJAX request to your Django API endpoint
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/',
+                    data: { url: url },
+                    success: function(data) {
+                        // Handle successful response
+                        console.log('Data received:', data);
+
+                        // Show and populate the response container
+                        $('#responseContainer').show();
+                        $('#responseContent').text(JSON.stringify(data, null, 2));
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error
+                        console.error('Error fetching data:', error);
+                        $('#responseContainer').show();
+                        $('#responseContent').text('Error fetching data: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

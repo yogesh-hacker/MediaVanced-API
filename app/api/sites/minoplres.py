@@ -51,13 +51,10 @@ def real_extract(url):
             response_data['error'] = 'Regex error, failed to extract streaming URL!'
 
         # Downloading URL extraction
-        headers = {
-            "Referer": "https://minoplres.xyz/"
-        }
 
         for suffix in suffixes:
             download_url = base_url.format(suffix)
-            response = requests.get(download_url, headers=headers)
+            response = requests.get(download_url, headers=initial_headers)
             
             if "This version" not in response.text:
                 mPageHtml = response.text
@@ -75,7 +72,7 @@ def real_extract(url):
                         "hash": mHash['value']
                     }
                     
-                    mResponse2 = requests.post(download_url, data=payload, headers=headers)
+                    mResponse2 = requests.post(download_url, data=payload, headers=initial_headers)
                     mPageHtml2 = mResponse2.text
                     mPattern = r'href="([^"]+\.mp4[^"]*)"'
                     mMatch = re.search(mPattern, mPageHtml2)

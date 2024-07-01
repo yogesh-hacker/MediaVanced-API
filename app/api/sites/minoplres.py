@@ -30,6 +30,7 @@ def real_extract(url):
     try:
         # Streaming URL extraction
         initial_response = requests.get(url, headers=initial_headers)
+        print(initial_response.request.headers)
         initial_response.raise_for_status()  # Raise an HTTPError if the response was unsuccessful
         initial_page_html = initial_response.text
 

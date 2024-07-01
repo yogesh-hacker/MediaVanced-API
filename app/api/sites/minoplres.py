@@ -29,57 +29,58 @@ def real_extract(url):
 
     try:
         # Streaming URL extraction
-        initial_response = requests.get(url, headers=initial_headers)
-        initial_response.raise_for_status()  # Raise an HTTPError if the response was unsuccessful
-        initial_page_html = initial_response.text
+        with requests.Session() as session:
+            initial_response = session.get(url, headers=initial_headers)
+            initial_response.raise_for_status()  # Raise an HTTPError if the response was unsuccessful
+            initial_page_html = initial_response.text
 
-        stream_pattern = r'file:"([^"]+)"'
-        stream_match = re.search(stream_pattern, initial_page_html)
-        
-        if stream_match:
-            stream_url_base = stream_match.group(1)
-            stream_url_template = re.sub(r'(_[a-z])', '_{}', stream_url_base)
-            for suffix in suffixes:
-                quality = qualities.get(suffix, 'unknown')
-                stream_url = stream_url_template.format(suffix)
-                stream_response = requests.get(stream_url, headers=initial_headers)
-                if stream_response.status_code == 200:
-                    response_data['streaming_urls'][quality] = stream_url
-        else:
-            response_data['error'] = 'Regex error, failed to extract streaming URL!'
+            stream_pattern = r'file:"([^"]+)"'
+            stream_match = re.search(stream_pattern, initial_page_html)
+            
+            if stream_match:
+                stream_url_base = stream_match.group(1)
+                stream_url_template = re.sub(r'(_[a-z])', '_{}', stream_url_base)
+                for suffix in suffixes:
+                    quality = qualities.get(suffix, 'unknown')
+                    stream_url = stream_url_template.format(suffix)
+                    stream_response = session.get(stream_url, headers=initial_headers)
+                    if stream_response.status_code == 200:
+                        response_data['streaming_urls'][quality] = stream_url
+            else:
+                response_data['error'] = 'Regex error, failed to extract streaming URL!'
 
         # Downloading URL extraction
-
         for suffix in suffixes:
-            download_url = base_url.format(suffix)
-            response = requests.get(download_url, headers=initial_headers)
-            if "This version" not in response.text:
-                mPageHtml = response.text
-                mSoup = BeautifulSoup(mPageHtml, "html.parser")
-                mOp = mSoup.find("input", attrs={"name": "op"})
-                mId = mSoup.find("input", attrs={"name": "id"})
-                mMode = mSoup.find("input", attrs={"name": "mode"})
-                mHash = mSoup.find("input", attrs={"name": "hash"})
-                
-                if mOp and mId and mMode and mHash:
-                    payload = {
-                        "op": mOp['value'],
-                        "id": mId['value'],
-                        "mode": mMode['value'],
-                        "hash": mHash['value']
-                    }
+            with requests.Session() as session:
+                download_url = base_url.format(suffix)
+                response = session.get(download_url, headers=initial_headers)
+                if "This version" not in response.text:
+                    mPageHtml = response.text
+                    mSoup = BeautifulSoup(mPageHtml, "html.parser")
+                    mOp = mSoup.find("input", attrs={"name": "op"})
+                    mId = mSoup.find("input", attrs={"name": "id"})
+                    mMode = mSoup.find("input", attrs={"name": "mode"})
+                    mHash = mSoup.find("input", attrs={"name": "hash"})
                     
-                    mResponse2 = requests.post(download_url, data=payload, headers=initial_headers)
-                    initial_page_html = mResponse2.text
-                    print(initial_page_html)
-                    mPattern = r'href="([^"]+\.mp4[^"]*)"'
-                    mMatch = re.search(mPattern, initial_page_html)
-                    if mMatch:
-                        quality = qualities.get(suffix, 'unknown')
-                        response_data['downloading_urls'][quality] = mMatch.group(1)
-                else:
-                    response_data['error'] = 'Failed to extract necessary form inputs for download URL!'
-                    break
+                    if mOp and mId and mMode and mHash:
+                        payload = {
+                            "op": mOp['value'],
+                            "id": mId['value'],
+                            "mode": mMode['value'],
+                            "hash": mHash['value']
+                        }
+                        
+                        mResponse2 = session.post(download_url, data=payload, headers=initial_headers)
+                        initial_page_html = mResponse2.text
+                        print(initial_page_html)
+                        mPattern = r'href="([^"]+\.mp4[^"]*)"'
+                        mMatch = re.search(mPattern, initial_page_html)
+                        if mMatch:
+                            quality = qualities.get(suffix, 'unknown')
+                            response_data['downloading_urls'][quality] = mMatch.group(1)
+                    else:
+                        response_data['error'] = 'Failed to extract necessary form inputs for download URL!'
+                        break
 
         if not response_data['streaming_urls'] and not response_data['downloading_urls']:
             response_data['status'] = 'failed'

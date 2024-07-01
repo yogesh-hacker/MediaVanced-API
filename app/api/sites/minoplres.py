@@ -54,7 +54,6 @@ def real_extract(url):
             stream_url_base = stream_match.group(1)
             stream_url_template = re.sub(r'(_[a-z])', '_{}', stream_url_base)
             for suffix in suffixes:
-                time.sleep(random.uniform(1, 3))  # Random delay between 1 and 3 seconds
                 quality = qualities.get(suffix, 'unknown')
                 stream_url = stream_url_template.format(suffix)
                 stream_response = requests.get(stream_url, headers=random_headers())
@@ -86,7 +85,8 @@ def real_extract(url):
                     
                     mResponse2 = requests.post(download_url, data=payload, headers=random_headers())
                     initial_page_html = mResponse2.text
-                    print(initial_page_html)
+                    if "Security error1" in initial_page_html:
+                        print(f"Security Error: Quality {suffix}")
                     mPattern = r'href="([^"]+\.mp4[^"]*)"'
                     mMatch = re.search(mPattern, initial_page_html)
                     if mMatch:

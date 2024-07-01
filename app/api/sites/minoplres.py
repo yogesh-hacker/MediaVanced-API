@@ -5,6 +5,7 @@ from django.http import JsonResponse
 
 default_domain = "https://minoplres.xyz/"
 initial_headers = {
+    'Origin': default_domain,
     'Referer': default_domain
 }
 

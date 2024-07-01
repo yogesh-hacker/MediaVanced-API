@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure--^cs(5_t8g%w7$rsazj-xw)qvvswzh(aji1744-&3=3ah@%5i(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['violent-oralie-hackerindia-4c5d8d3e.koyeb.app']
+ALLOWED_HOSTS = ['violent-oralie-hackerindia-4c5d8d3e.koyeb.app','127.0.0.1']
 
 
 # Application definition

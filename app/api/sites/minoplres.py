@@ -5,7 +5,6 @@ from django.http import JsonResponse
 
 default_domain = "https://minoplres.xyz/"
 initial_headers = {
-    'Origin': default_domain,
     'Referer': default_domain,
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
 }
@@ -55,7 +54,7 @@ def real_extract(url):
         for suffix in suffixes:
             download_url = base_url.format(suffix)
             response = requests.get(download_url, headers=initial_headers)
-            
+            print(response.text)
             if "This version" not in response.text:
                 mPageHtml = response.text
                 mSoup = BeautifulSoup(mPageHtml, "html.parser")

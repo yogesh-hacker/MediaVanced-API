@@ -31,7 +31,6 @@ def real_extract(url):
     try:
         # Streaming URL extraction
         initial_response = requests.get(url, headers=initial_headers)
-        print(initial_response.text)
         initial_response.raise_for_status()  # Raise an HTTPError if the response was unsuccessful
         initial_page_html = initial_response.text
 
@@ -40,6 +39,7 @@ def real_extract(url):
         
         if stream_match:
             stream_url_base = stream_match.group(1)
+            print(stream_url_base)
             stream_url_template = re.sub(r'(_[a-z])', '_{}', stream_url_base)
             for suffix in suffixes:
                 quality = qualities.get(suffix, 'unknown')

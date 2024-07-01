@@ -31,7 +31,10 @@ qualities = {
 def random_headers():
     return {
         'Referer': default_domain,
-        'User-Agent': random.choice(user_agents)
+        'User-Agent': random.choice(user_agents),
+        'Accept': '*/*',
+        'Connection': 'keep-alive',
+        'Content-Type': 'application/x-www-form-urlencoded"'
     }
 
 def real_extract(url):

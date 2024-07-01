@@ -6,7 +6,8 @@ from django.http import JsonResponse
 default_domain = "https://minoplres.xyz/"
 initial_headers = {
     'Origin': default_domain,
-    'Referer': default_domain
+    'Referer': default_domain,
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
 }
 
 base_url = "https://minoplres.xyz/d/l1s6pevitg6y_{}"

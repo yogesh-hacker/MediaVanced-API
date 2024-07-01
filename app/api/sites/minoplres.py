@@ -14,7 +14,10 @@ user_agents = [
 
 initial_headers = {
     'Referer': default_domain,
-    'User-Agent': random.choice(user_agents)
+    'User-Agent': random.choice(user_agents),
+    'Accept': '*/*',
+    'Connection': 'keep-alive',
+    'Content-Type': 'application/x-www-form-urlencoded"'
 }
 
 base_url = "https://minoplres.xyz/d/l1s6pevitg6y_{}"

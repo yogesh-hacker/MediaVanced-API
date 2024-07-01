@@ -38,7 +38,6 @@ def real_extract(url):
         
         if stream_match:
             stream_url_base = stream_match.group(1)
-            print(stream_url_base)
             stream_url_template = re.sub(r'(_[a-z])', '_{}', stream_url_base)
             for suffix in suffixes:
                 quality = qualities.get(suffix, 'unknown')
@@ -54,7 +53,6 @@ def real_extract(url):
         for suffix in suffixes:
             download_url = base_url.format(suffix)
             response = requests.get(download_url, headers=initial_headers)
-            print(response.text)
             if "This version" not in response.text:
                 mPageHtml = response.text
                 mSoup = BeautifulSoup(mPageHtml, "html.parser")
@@ -72,9 +70,10 @@ def real_extract(url):
                     }
                     
                     mResponse2 = requests.post(download_url, data=payload, headers=initial_headers)
-                    mPageHtml2 = mResponse2.text
+                    initial_page_html = mResponse2.text
+                    print(initial_page_html)
                     mPattern = r'href="([^"]+\.mp4[^"]*)"'
-                    mMatch = re.search(mPattern, mPageHtml2)
+                    mMatch = re.search(mPattern, initial_page_html)
                     if mMatch:
                         quality = qualities.get(suffix, 'unknown')
                         response_data['downloading_urls'][quality] = mMatch.group(1)

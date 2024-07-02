@@ -14,17 +14,16 @@ user_agents = [
 
 initial_headers = {
     'Referer': default_domain,
-    'User-Agent': random.choice(user_agents),
+    'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"',
 }
 
-base_url = "https://minoplres.xyz/d/l1s6pevitg6y_{}"
 suffixes = ['h', 'l', 'o']
 qualities = {
     'h': '720p',
     'l': '360p',
     'o': '480p'
 }
-
+available_qualities = []
 def random_headers():
     return {
         'Referer': default_domain,
@@ -33,6 +32,26 @@ def random_headers():
         'Connection': 'keep-alive',
         'Content-Type': 'application/x-www-form-urlencoded"'
     }
+import re
+
+def extract_file_id(url):
+    """
+    Extracts the file ID from a given URL.
+
+    Parameters:
+    url (str): The URL from which to extract the file ID.
+
+    Returns:
+    str: The extracted file ID or None if no match is found.
+    """
+
+    pattern = r'embed-([^.]+)\.html'
+
+    match = re.search(pattern, url)
+    if match:
+        return match.group(1)
+    else:
+        return None
 
 def real_extract(url):
     response_data = {
@@ -45,33 +64,13 @@ def real_extract(url):
     }
 
     try:
-        # Streaming URL extraction
-        initial_response = requests.get(url, headers=random_headers())
-        initial_response.raise_for_status()  # Raise an HTTPError if the response was unsuccessful
-        initial_page_html = initial_response.text
-
-        stream_pattern = r'file:"([^"]+)"'
-        stream_match = re.search(stream_pattern, initial_page_html)
-        
-        if stream_match:
-            stream_url_base = stream_match.group(1)
-            stream_url_template = re.sub(r'(_[a-z])', '_{}', stream_url_base)
-            print(stream_url_template)
-            for suffix in suffixes:
-                quality = qualities.get(suffix, 'unknown')
-                stream_url = stream_url_template.format(suffix)
-                stream_response = requests.get(stream_url, headers=random_headers())
-                if stream_response.status_code == 200:
-                    response_data['streaming_urls'][quality] = stream_url
-        else:
-            response_data['error'] = 'Regex error, failed to extract streaming URL!'
-
         # Downloading URL extraction
-
+        base_url = default_domain + "d/"+extract_file_id(url)+"_{}"
         for suffix in suffixes:
             download_url = base_url.format(suffix)
             response = requests.get(download_url, headers=random_headers())
             if "This version" not in response.text:
+                available_qualities.append(suffix)
                 mPageHtml = response.text
                 mSoup = BeautifulSoup(mPageHtml, "html.parser")
                 mOp = mSoup.find("input", attrs={"name": "op"})
@@ -99,6 +98,24 @@ def real_extract(url):
                 else:
                     response_data['error'] = 'Failed to extract necessary form inputs for download URL!'
                     break
+        
+        # Streaming URL extraction
+        initial_response = requests.get(url, headers=initial_headers)
+        initial_response.raise_for_status()  # Raise an HTTPError if the response was unsuccessful
+        initial_page_html = initial_response.text
+
+        stream_pattern = r'file:"([^"]+)"'
+        stream_match = re.search(stream_pattern, initial_page_html)
+        if stream_match:
+            stream_url_base = stream_match.group(1)
+            #stream_url_template = re.sub(r'(_[a-z])', '_{}', stream_url_base)
+            stream_url_template = re.sub(r'(_[^/]*?)(?=/)', '_{}', stream_url_base)
+            for suffix in available_qualities:
+                quality = qualities.get(suffix, 'unknown')
+                stream_url = stream_url_template.format(suffix)
+                response_data['streaming_urls'][quality] = stream_url
+        else:
+            response_data['error'] = 'Regex error, failed to extract streaming URL!'
 
         if not response_data['streaming_urls'] and not response_data['downloading_urls']:
             response_data['status'] = 'failed'

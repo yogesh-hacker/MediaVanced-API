@@ -8,8 +8,13 @@ import json
 default_domain = "https://febbox.com/"
 initial_headers = {
     'Referer': default_domain,
-    'Accept-Language': 'de-DE',
+    'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
     'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"',
+}
+
+proxy = {
+    "http": "http://qvgxntjn:1cyxq9jfd6rh@45.94.47.66:8110",
+    "https": "http://qvgxntjn:1cyxq9jfd6rh@45.94.47.66:8110"
 }
 
 response_data = {
@@ -43,22 +48,20 @@ def real_extract(url):
         "fid" : file_id,
         "share_key": share_key, 
     }
-    initial_response = requests.post("https://www.febbox.com/file/player", data=payload).text
+    initial_response = requests.post("https://www.febbox.com/file/player", data=payload, proxies=proxy).text
     pattern = r'var\s+sources\s*=\s*(\[.*?\]);'
     match = re.search(pattern, initial_response)
     json_response = json.loads(match.group(1))
     unique_qualities = {}
     valid_qualities = ['1080P', '720P', '360P']
     filtered_files = {}
-    pattern = re.compile(r'https://fr1-as01-1\.shegu\.net/')
     
     for source in json_response:
         quality = source['label']
         file_url = source.get('file')
-        modified_url = file_url.replace("https://fr1-as01-1", "https://in1-as2-01")
         if quality in valid_qualities:
-            if modified_url:
-                filtered_files[quality.lower()] = modified_url
+            if file_url:
+                filtered_files[quality.lower()] = file_url
 
 
     response_data['streaming_urls'] = filtered_files

@@ -53,9 +53,10 @@ def real_extract(url):
     for source in json_response:
         quality = source['label']
         file_url = source.get('file')
+        modified_url = pattern.sub("https://in1-as2-01.shegu.net/", file_url)
         if quality in valid_qualities:
-            if file_url:
-                filtered_files[quality.lower()] = file_url
+            if modified_url:
+                filtered_files[quality.lower()] = modified_url
 
 
     response_data['streaming_urls'] = filtered_files

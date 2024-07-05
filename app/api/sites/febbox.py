@@ -8,6 +8,7 @@ import json
 default_domain = "https://febbox.com/"
 initial_headers = {
     'Referer': default_domain,
+    'Accept-Language': 'de-DE',
     'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"',
 }
 
@@ -49,11 +50,12 @@ def real_extract(url):
     unique_qualities = {}
     valid_qualities = ['1080P', '720P', '360P']
     filtered_files = {}
-
+    pattern = re.compile(r'https://fr1-as01-1\.shegu\.net/')
+    
     for source in json_response:
         quality = source['label']
         file_url = source.get('file')
-        modified_url = pattern.sub("https://in1-as2-01.shegu.net/", file_url)
+        modified_url = file_url.replace("https://fr1-as01-1", "https://in1-as2-01")
         if quality in valid_qualities:
             if modified_url:
                 filtered_files[quality.lower()] = modified_url

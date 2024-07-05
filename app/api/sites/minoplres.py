@@ -18,6 +18,7 @@ qualities = {
     'o': '480p'
 }
 available_qualities = []
+
 def random_headers():
     return {
         'Referer': default_domain,

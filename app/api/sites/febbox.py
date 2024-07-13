@@ -15,8 +15,8 @@ initial_headers = {
 }
 
 proxy = {
-    "http": "http://qvgxntjn:1cyxq9jfd6rh@45.94.47.66:8110",
-    "https": "http://qvgxntjn:1cyxq9jfd6rh@45.94.47.66:8110"
+    "http": "http://qvgxntjn:1cyxq9jfd6rh@45.127.248.127:5128",
+    "https": "http://qvgxntjn:1cyxq9jfd6rh@45.127.248.127:5128"
 }
 
 cookies = {
@@ -55,7 +55,7 @@ def real_extract(url):
         "share_key": share_key, 
     }
 
-    initial_response = session.post("https://www.febbox.com/file/player", headers=initial_headers, data=payload, cookies=cookies).text
+    initial_response = session.post("https://www.febbox.com/file/player", headers=initial_headers, data=payload, cookies=cookies, proxies=proxy).text
     
     pattern = r'var\s+sources\s*=\s*(\[.*?\]);'
     match = re.search(pattern, initial_response)

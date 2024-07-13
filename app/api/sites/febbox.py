@@ -7,14 +7,20 @@ import json
 
 default_domain = "https://febbox.com/"
 initial_headers = {
-    'Referer': default_domain,
-    'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
-    'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"',
+    'Referer': 'https://www.febbox.com/',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    'X-Requested-With': 'XMLHttpRequest',
+    'Accept': 'text/plain, */*; q=0.01',
+    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
 }
 
 proxy = {
     "http": "http://qvgxntjn:1cyxq9jfd6rh@45.94.47.66:8110",
     "https": "http://qvgxntjn:1cyxq9jfd6rh@45.94.47.66:8110"
+}
+
+cookies = {
+    'ui': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjAzNTM4MDQsIm5iZiI6MTcyMDM1MzgwNCwiZXhwIjoxNzUxNDU3ODI0LCJkYXRhIjp7InVpZCI6NDU0MDA0LCJ0b2tlbiI6IjhkYzEzZDMyMDQ5Nzg0NmNhMTY1NmVmMjQyYmM2YzhjIn19.sEJ44MCMWuXfuL8wuoDY3soR1BwNv3xidfbKo79t-Z8'
 }
 
 response_data = {
@@ -39,8 +45,8 @@ def real_extract(url):
     file_path = extract_last_path(url)
     share_key = file_path
     base_url = f'{default_domain}share/{share_key}'
-    
-    initial_response = requests.get(base_url).text
+    session = requests.Session()
+    initial_response = session.get(base_url).text
     soup = BeautifulSoup(initial_response, "html.parser")
     file_id = soup.find("div", attrs={"class":"file"})['data-id']
     
@@ -48,7 +54,9 @@ def real_extract(url):
         "fid" : file_id,
         "share_key": share_key, 
     }
-    initial_response = requests.post("https://www.febbox.com/file/player", data=payload, proxies=proxy).text
+
+    initial_response = session.post("https://www.febbox.com/file/player", headers=initial_headers, data=payload, cookies=cookies).text
+    
     pattern = r'var\s+sources\s*=\s*(\[.*?\]);'
     match = re.search(pattern, initial_response)
     json_response = json.loads(match.group(1))

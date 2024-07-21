@@ -22,13 +22,26 @@
                             <form id="apiRequestForm">
                                 <div class="form-group">
                                     <label for="urlInput">URL:</label>
-                                    <input type="text" class="form-control" id="urlInput" placeholder="Enter URL" value="https://www.febbox.com/share/3cqujaIh">
+                                    <input type="text" class="form-control" id="urlInput" placeholder="Enter URL" value="https://saicord.com/hi/movies/1530-girls-to-buy.html">
                                 </div>
                                 <button type="submit" class="btn btn-primary">Fetch Data</button>
                             </form>
                             <div id="responseContainer" class="mt-4" style="display: none;">
                                 <h5 class="card-title">API Response</h5>
                                 <pre id="responseContent" class="bg-light p-3 rounded"></pre>
+                            </div>
+                            <div id="supportedSitesContainer" class="mt-4">
+                                <h5 class="card-title">Supported Sites</h5>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Site Name</th>
+                                            <th scope="col">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="supportedSitesTableBody">
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -73,6 +86,21 @@
                         $('#responseContent').text('Error fetching data: ' + error);
                     }
                 });
+            });
+
+            // Static array of supported sites
+            var supportedSites = [
+                {name: "Febbox", is_active: true},
+                {name: "Minoplres", is_active: true},
+                {name: "Photojin", is_active: true},
+                {name: "Saicord", is_active: true}
+            ];
+
+            // Populate the table with the static array
+            var tableBody = $('#supportedSitesTableBody');
+            supportedSites.forEach(function(site) {
+                var row = '<tr><td>' + site.name + '</td><td>' + (site.is_active ? 'Active' : 'Inactive') + '</td></tr>';
+                tableBody.append(row);
             });
         });
     </script>

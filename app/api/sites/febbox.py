@@ -61,7 +61,7 @@ def real_extract(url):
     match = re.search(pattern, initial_response)
     json_response = json.loads(match.group(1))
     unique_qualities = {}
-    valid_qualities = ['1080P', '720P', '360P']
+    valid_qualities = ['4K', '1080P', '720P', '480P', '360P', '240P', '144P']
     filtered_files = {}
     
     for source in json_response:
@@ -70,8 +70,9 @@ def real_extract(url):
         if quality in valid_qualities:
             if file_url:
                 filtered_files[quality.lower()] = file_url
-
-
+    
+    response_data['status'] = 'success'
+    response_data['status_code'] = 200
     response_data['streaming_urls'] = filtered_files
     response_data['downloading_urls'] = filtered_files
     return response_data

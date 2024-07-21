@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from .sites import minoplres, photojin, febbox
+from .sites import minoplres, photojin, febbox, saicord
 
 def api_endpoint(request):
     target_url = request.GET.get('url', None)
@@ -8,12 +8,13 @@ def api_endpoint(request):
         return JsonResponse({'error': 'URL parameter "url" is required'}, status=400)
     
     if "minoplres" in target_url:
-        print(target_url)
         data = minoplres.real_extract(target_url)
     elif "photojin" in target_url:
         data = photojin.real_extract(target_url)
     elif "febbox" in target_url:
         data = febbox.real_extract(target_url)
+    elif "saicord" in target_url:
+        data = saicord.real_extract(target_url)
     else:
         return JsonResponse({'error': 'Invalid site name'}, status=400)
 

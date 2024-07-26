@@ -18,11 +18,13 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Explore Content</h5>
-                            <p class="card-text">Enter the URL and click the button to fetch data from the API.</p>
+                            <p class="card-text">
+                                Enter the URL and click the button to fetch data from the API.
+                            </p>
                             <form id="apiRequestForm">
                                 <div class="form-group">
                                     <label for="urlInput">URL:</label>
-                                    <input type="text" class="form-control" id="urlInput" placeholder="Enter URL" value="https://saicord.com/hi/movies/1530-girls-to-buy.html">
+                                    <input type="text" class="form-control" id="urlInput" placeholder="Enter URL" value="https://antol307vvk.com/play/tt26548265">
                                 </div>
                                 <button type="submit" class="btn btn-primary">Fetch Data</button>
                             </form>
@@ -49,7 +51,9 @@
             </div>
         </main>
         <footer class="mt-5 text-center">
-            <p>&copy; 2024 MediaVanced. All rights reserved.</p>
+            <p>
+                &copy; 2024 MediaVanced. All rights reserved.
+            </p>
         </footer>
     </div>
 
@@ -70,7 +74,9 @@
                 $.ajax({
                     type: 'GET',
                     url: '/api/',
-                    data: { url: url },
+                    data: {
+                        url: url
+                    },
                     success: function(data) {
                         // Handle successful response
                         console.log('Data received:', data);
@@ -89,17 +95,26 @@
             });
 
             // Static array of supported sites
-            var supportedSites = [
-                {name: "Febbox", is_active: true},
-                {name: "Minoplres", is_active: true},
-                {name: "Photojin", is_active: true},
-                {name: "Saicord", is_active: true}
-            ];
+            var supportedSites = [{
+                name: "Febbox", is_active: true
+            },
+                {
+                    name: "Minoplres", is_active: true
+                },
+                {
+                    name: "Photojin", is_active: true
+                },
+                {
+                    name: "Saicord", is_active: true
+                },
+                {
+                    name: "Antol(Super Player)", is_active: true
+                }];
 
             // Populate the table with the static array
             var tableBody = $('#supportedSitesTableBody');
             supportedSites.forEach(function(site) {
-                var row = '<tr><td>' + site.name + '</td><td>' + (site.is_active ? 'Active' : 'Inactive') + '</td></tr>';
+                var row = '<tr><td>' + site.name + '</td><td>' + (site.is_active ? 'Active': 'Inactive') + '</td></tr>';
                 tableBody.append(row);
             });
         });

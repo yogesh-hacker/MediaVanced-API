@@ -47,17 +47,30 @@ def real_extract(url):
     base_url = f'{default_domain}share/{share_key}'
     session = requests.Session()
     initial_response = session.get(base_url).text
+    print(initial_response)
     soup = BeautifulSoup(initial_response, "html.parser")
-    file_id = soup.find("div", attrs={"class":"file"})['data-id']
-    
+    file_id = soup.find("div", attrs={"class": "file"})
+    if file_id:
+        file_id = file_id.get('data-id')
+    if not file_id:
+        file_id = soup.find("button", attrs={"class": "details"})
+    if file_id:
+        file_id = file_id.get('data-id')
+
+    if not file_id:
+        raise ValueError("file_id not found in the HTML response")
+
     payload = {
         "fid" : file_id,
         "share_key": share_key, 
     }
-
+    
+    print(payload)
     initial_response = session.post("https://www.febbox.com/file/player", headers=initial_headers, data=payload, cookies=cookies, proxies=proxy).text
+    print(initial_response)
     
     pattern = r'var\s+sources\s*=\s*(\[.*?\]);'
+    #print(initial_response)
     match = re.search(pattern, initial_response)
     json_response = json.loads(match.group(1))
     unique_qualities = {}

@@ -7,7 +7,7 @@ import random
 import time
 
 # Default domain and initial headers for the requests
-default_domain = "https://photojin.shop/"
+default_domain = "https://photojin.online/"
 initial_headers = {
     'Referer': default_domain,
     'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36',

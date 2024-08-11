@@ -49,16 +49,16 @@ def real_extract(url):
     initial_response = session.get(base_url).text
     print(initial_response)
     soup = BeautifulSoup(initial_response, "html.parser")
-    file_id = soup.find("div", attrs={"class": "file"})
-    if file_id:
-        file_id = file_id.get('data-id')
+    file_id_tag = soup.find("div", attrs={"class": "file"})
+    if file_id_tag:
+        file_id = file_id_tag.get('data-id')
     if not file_id:
-        file_id = soup.find("button", attrs={"class": "details"})
-    if file_id:
-        file_id = file_id.get('data-id')
-
+        file_id_tag = soup.find("button", attrs={"class": "details"})
+        if file_id_tag:
+        file_id = file_id_tag.get('data-id')
     if not file_id:
         raise ValueError("file_id not found in the HTML response")
+
 
     payload = {
         "fid" : file_id,

@@ -55,7 +55,7 @@ def real_extract(url):
     if not file_id:
         file_id_tag = soup.find("button", attrs={"class": "details"})
         if file_id_tag:
-        file_id = file_id_tag.get('data-id')
+            file_id = file_id_tag.get('data-id')
     if not file_id:
         raise ValueError("file_id not found in the HTML response")
 

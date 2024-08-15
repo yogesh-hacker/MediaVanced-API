@@ -48,6 +48,9 @@ def real_extract(url):
     session = requests.Session()
     initial_response = session.get(base_url).text
     soup = BeautifulSoup(initial_response, "html.parser")
+    
+    file_id = None
+    
     file_id_tag = soup.find("div", attrs={"class": "file"})
     if file_id_tag:
         file_id = file_id_tag.get('data-id')

@@ -80,6 +80,12 @@ def real_extract(url):
         if quality in valid_qualities:
             if file_url:
                 filtered_files[quality.lower()] = file_url
+        elif quality == 'ORG':
+            if file_url:
+                for q in valid_qualities:
+                    if q.lower() in file_url.lower():
+                        filtered_files[q.lower()] = file_url
+                        break
     
     response_data['status'] = 'success'
     response_data['status_code'] = 200

@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from .sites import minoplres, photojin, febbox, saicord, antol
+from .sites import minoplres, photojin, febbox, saicord, antol, streamtape
 
 def api_endpoint(request):
     target_url = request.GET.get('url', None)
@@ -17,6 +17,8 @@ def api_endpoint(request):
         data = saicord.real_extract(target_url)
     elif "antol" in target_url:
         data = antol.real_extract(target_url)
+    elif "streamtape" in target_url:
+        data = streamtape.real_extract(target_url)
     else:
         return JsonResponse({'error': 'Invalid site name'}, status=400)
 

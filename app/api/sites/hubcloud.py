@@ -33,12 +33,19 @@ qualities= ['144p', '240p', '360p', '480p', '720p', '1080p']
 def real_extract(url):
     #Get initial download page
     initial_response = session.get(url, headers=initial_headers).text
-    soup = BeautifulSoup(initial_response, "html.parser")
-    anchor_tag = soup.find("a", attrs={"class": "btn"})
-    next_page_url = None
-    if anchor_tag:
-        next_page_url = anchor_tag['href']
+    if "Redirect" in initial_response:
+        soup = BeautifulSoup(initial_response, "html.parser")
+        meta_tag = soup.find("meta", attrs={"http-equiv": "refresh"})['content']
+        url = meta_tag.split("url=")[-1]
+        initial_response = session.get(url, headers=initial_headers).text
+    url_pattern = r"https:\/\/[^'\" ]*hubcloud\.php[^'\" ]*\b(id=[^&]+&token=[^'\" ]+|token=[^&]+&id=[^'\" ]+)"
+    match = re.search(url_pattern, initial_response)
+    if match:
+        url = match.group(0)
+    else:
+        url = None
     
+    next_page_url = url
     initial_response = session.get(next_page_url, headers=initial_headers).text
     soup = BeautifulSoup(initial_response, "html.parser")
     anchor_tags = soup.find_all("a", attrs={"class": "btn"})

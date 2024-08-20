@@ -4,6 +4,7 @@ import re
 from django.http import JsonResponse
 import time
 import random
+from fake_useragent import UserAgent
 
 default_domain = "https://minoplres.xyz/"
 initial_headers = {
@@ -19,15 +20,21 @@ qualities = {
 }
 available_qualities = []
 
+
+def generate_random_ip():
+    return '.'.join(str(random.randint(0, 255)) for _ in range(4))
+
 def random_headers():
+    ua = UserAgent()
+    random_user_agent = ua.random
     return {
         'Referer': default_domain,
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"',
+        'User-Agent': random_user_agent,
         'Accept': '*/*',
         'Connection': 'keep-alive',
+        'X-Forwarded-For': generate_random_ip(),
         'Content-Type': 'application/x-www-form-urlencoded"'
     }
-import re
 
 def extract_file_id(url):
     """
@@ -62,9 +69,12 @@ def real_extract(url):
         # Downloading URL extraction
         base_url = default_domain + "d/"+extract_file_id(url)+"_{}"
         for suffix in suffixes:
+            headers = random_headers()
+            session = requests.Session()
             download_url = base_url.format(suffix)
-            response = requests.get(download_url, headers=random_headers())
+            response = session.get(download_url, headers=headers)
             if "This version" not in response.text:
+                print(session.cookies)
                 available_qualities.append(suffix)
                 mPageHtml = response.text
                 mSoup = BeautifulSoup(mPageHtml, "html.parser")
@@ -81,7 +91,7 @@ def real_extract(url):
                         "hash": mHash['value']
                     }
                     
-                    mResponse2 = requests.post(download_url, data=payload, headers=random_headers())
+                    mResponse2 = session.post(download_url, data=payload, headers=headers)
                     initial_page_html = mResponse2.text
                     if "Security error1" in initial_page_html:
                         print(f"Security Error: Quality {suffix}")

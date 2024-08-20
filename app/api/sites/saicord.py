@@ -34,11 +34,13 @@ qualities= ['144', '240', '360', '480', '720', '1080']
 def fetch_and_construct_urls(initial_response):
     base_url = initial_response.url.rsplit('/', 1)[0] + '/'
     streaming_urls = {}
+    downloading_urls = {}
     for quality in qualities:
         if quality in initial_response.text:
             quality_url = f"{base_url}{quality}.mp4"
-            streaming_urls[f"{quality}p"] = quality_url
-    return streaming_urls
+            streaming_urls[f"{quality}p"] = quality_url+":hls:manifest.m3u8"
+            downloading_urls[f"{quality}p"] = quality_url
+    return streaming_urls, downloading_urls
 
 
 def real_extract(url):
@@ -60,12 +62,12 @@ def real_extract(url):
         matcher = re.search(pattern, decoded_string)
         if matcher:
             initial_response = requests.get(matcher.group(1), headers=initial_headers, proxies=proxy)
-            streaming_urls = fetch_and_construct_urls(initial_response)
+            streaming_urls, downloading_urls = fetch_and_construct_urls(initial_response)
             #Return response
             response_data['status'] = 'success'
             response_data['status_code'] = 200
             response_data['streaming_urls'] = streaming_urls
-            response_data['downloading_urls'] = streaming_urls
+            response_data['downloading_urls'] = downloading_urls
             return response_data;
         else:
             response_data['status'] = 'failed'

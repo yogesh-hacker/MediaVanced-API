@@ -36,6 +36,8 @@ def real_extract(url):
     media_url = final_response.headers.get('Location')
     available_quality = next((q for q in qualities if q in media_url), "UNKNOWN")
     quality_key = f"{available_quality}p" if available_quality != "UNKNOWN" else "UNKNOWN"
+    print(streaming_url)
+    print(media_url)
     media_urls = {quality_key: media_url}
     response_data['status'] = 'success'
     response_data['status_code'] = 200

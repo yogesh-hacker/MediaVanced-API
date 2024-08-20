@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from .sites import minoplres, photojin, febbox, saicord, antol, streamtape
+from .sites import minoplres, photojin, febbox, saicord, antol, streamtape, hubcloud
 
 def api_endpoint(request):
     target_url = request.GET.get('url', None)
@@ -19,6 +19,8 @@ def api_endpoint(request):
         data = antol.real_extract(target_url)
     elif "streamtape" in target_url:
         data = streamtape.real_extract(target_url)
+    elif "hubcloud" in target_url:
+        data = hubcloud.real_extract(target_url)
     else:
         return JsonResponse({'error': 'Invalid site name'}, status=400)
 

@@ -15,8 +15,8 @@ initial_headers = {
 }
 
 proxy = {
-    "http": "http://qvgxntjn:1cyxq9jfd6rh@45.127.248.127:5128",
-    "https": "http://qvgxntjn:1cyxq9jfd6rh@45.127.248.127:5128"
+    "http": "http://gxyjptfg:7dwwrl2bkr9w@38.154.227.167:5868",
+    "https": "http://gxyjptfg:7dwwrl2bkr9w@38.154.227.167:5868"
 }
 
 cookies = {

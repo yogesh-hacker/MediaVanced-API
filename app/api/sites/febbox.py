@@ -14,9 +14,9 @@ initial_headers = {
     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
 }
 
-proxy = {
-    "http": "http://gxyjptfg:7dwwrl2bkr9w@38.154.227.167:5868",
-    "https": "http://gxyjptfg:7dwwrl2bkr9w@38.154.227.167:5868"
+proxies = {
+    "http": "http://gxyjptfg:7dwwrl2bkr9w@198.23.239.134:6540",
+    "https": "http://gxyjptfg:7dwwrl2bkr9w@198.23.239.134:6540"
 }
 
 cookies = {
@@ -67,7 +67,7 @@ def real_extract(url):
         "share_key": share_key, 
     }
     
-    initial_response = session.post("https://www.febbox.com/file/player", headers=initial_headers, data=payload, cookies=cookies, proxies=proxy).text
+    initial_response = session.post("https://www.febbox.com/file/player", headers=initial_headers, data=payload, cookies=cookies, proxies=proxies).text
     
     pattern = r'var\s+sources\s*=\s*(\[.*?\]);'
     #print(initial_response)

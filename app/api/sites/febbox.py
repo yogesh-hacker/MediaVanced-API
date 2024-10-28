@@ -20,7 +20,7 @@ proxies = {
 }
 
 cookies = {
-    'ui': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjAzNTM4MDQsIm5iZiI6MTcyMDM1MzgwNCwiZXhwIjoxNzUxNDU3ODI0LCJkYXRhIjp7InVpZCI6NDU0MDA0LCJ0b2tlbiI6IjhkYzEzZDMyMDQ5Nzg0NmNhMTY1NmVmMjQyYmM2YzhjIn19.sEJ44MCMWuXfuL8wuoDY3soR1BwNv3xidfbKo79t-Z8'
+    'ui': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjAzNTgxMjQsIm5iZiI6MTcyMDM1ODEyNCwiZXhwIjoxNzUxNDYyMTQ0LCJkYXRhIjp7InVpZCI6NDU0MDA0LCJ0b2tlbiI6IjdjNmMwMzEzYThhOGUzOTczNGZjMDI2MDQ2Y2JlNzkzIn19.LXWUfS004XLU6irNvIiNbxmG0weQ-mjZr7rzUhQdBjk'
 }
 
 response_data = {
@@ -70,7 +70,7 @@ def real_extract(url):
     initial_response = session.post("https://www.febbox.com/file/player", headers=initial_headers, data=payload, cookies=cookies, proxies=proxies).text
     
     pattern = r'var\s+sources\s*=\s*(\[.*?\]);'
-    #print(initial_response)
+
     match = re.search(pattern, initial_response)
     json_response = json.loads(match.group(1))
     unique_qualities = {}

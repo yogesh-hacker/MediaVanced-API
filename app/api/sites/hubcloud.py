@@ -45,6 +45,7 @@ def real_extract(url):
                 initial_response = session.get(redirect_url, headers=initial_headers).text
 
         # Extract URL pattern
+        print(initial_response.text)
         url_pattern = r"https:\/\/[^'\" ]*hubcloud\.php[^'\" ]*\b(id=[^&]+&token=[^'\" ]+|token=[^&]+&id=[^'\" ]+)"
         match = re.search(url_pattern, initial_response)
         next_page_url = match.group(0) if match else None
